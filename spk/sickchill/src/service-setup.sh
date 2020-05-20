@@ -14,10 +14,18 @@ LEGACY_GROUP="sc-media"
 
 SERVICE_COMMAND="${PYTHON} ${SICKCHILL} --daemon --pidfile ${PID_FILE} --config ${CFG_FILE} --datadir ${SYNOPKG_PKGDEST}/var/"
 
+service_preinst ()
+{
+    SSL_CRT="/etc/ssl/certs/ca-certificates.crt"
+    if [ -f ${SSL_CRT} ]; then
+        ${GIT} config --system http.sslCAInfo ${SSL_CRT} > /dev/null 2>&1
+    fi
+}
+
 service_postinst ()
 {
     # Create a Python virtualenv
-    ${VIRTUALENV} --system-site-packages ${SYNOPKG_PKGDEST}/env >> ${INST_LOG}
+    # ${VIRTUALENV} --system-site-packages ${SYNOPKG_PKGDEST}/env >> ${INST_LOG}
 
     if [ "${SYNOPKG_PKG_STATUS}" == "INSTALL" ]; then
         # Clone the repository
@@ -25,12 +33,13 @@ service_postinst ()
     fi
 
     # Install the wheels
-    # ${INSTALL_DIR}/env/bin/pip install --no-deps --no-index -U --force-reinstall -f ${INSTALL_DIR}/share/wheelhouse ${INSTALL_DIR}/share/wheelhouse/*.whl > /dev/null 2>&1
-    # ${INSTALL_DIR}/env/bin/pip install --no-deps --no-index -U --force-reinstall -f ${SYNOPKG_PKGDEST}/var/SickChill/requirements.txt
+    # ${SYNOPKG_PKGDEST}/env/bin/pip install --no-deps --no-index -U --force-reinstall -f ${SYNOPKG_PKGDEST}/share/wheelhouse ${SYNOPKG_PKGDEST}/share/wheelhouse/*.whl > /dev/null 2>&1
+    # ${SYNOPKG_PKGDEST}/env/bin/pip install --no-deps --no-index -U --force-reinstall -f ${SYNOPKG_PKGDEST}/var/SickChill/requirements.txt
 
     # Set username and password
     sed -i "s/\(web_username *= *\).*/\1${wizard_web_username}/" ${SYNOPKG_PKGDEST}/var/config.ini
     sed -i "s/\(web_password *= *\).*/\1${wizard_web_password}/" ${SYNOPKG_PKGDEST}/var/config.ini
+    sed -i "s/\(web_port *= *\).*/\18081/" ${SYNOPKG_PKGDEST}/var/config.ini
 
     # Create logs directory, otherwise it might not start
     mkdir "$(dirname ${LOG_FILE})" >> ${INST_LOG} 2>&1
