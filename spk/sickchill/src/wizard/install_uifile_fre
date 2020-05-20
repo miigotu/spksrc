@@ -1,0 +1,25 @@
+[{
+    "step_title": "Choose your Username and Password",
+    "items": [{
+        "type": "textfield",
+        "desc": "Username to use with SickChill",
+        "subitems": [{
+            "key": "web_web_username",
+            "desc": "Username",
+            "defaultValue": "",
+            "validator": {
+                "allowBlank": false
+            }
+        }, {
+            "key": "wizard_web_password",
+            "desc": "Password to use with SickChill",
+            "defaultValue": "",
+            "validator": {
+                "allowBlank": false
+            }
+        }]
+    },
+    {
+        "desc": "Permissions for all download-related packages are managed with the group <b>'sc-download'</b> in DSM.<br>The group 'users' is no longer used as of DSM 6.<br>Package user will not appear on most UI settings.<br>Please read <a target=\"_blank\" href=\"https://github.com/SynoCommunity/spksrc/wiki/Permission-Management\">Permission Management</a> for details."
+    }]
+}]
